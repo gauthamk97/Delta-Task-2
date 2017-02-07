@@ -36,7 +36,8 @@ function animate() {
 
 	//Create Clouds
 	context.fillStyle = 'white';
-
+	cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
+	
 	for (i=0;i<4;i++) {
 		cloudXPositions[i]-=cWidth*0.005;
 		
