@@ -1,0 +1,12 @@
+* {
+	margin: 0px;
+
+}
+
+#myCanvas {
+	background-color: #00BFFF;
+	/*text-align: center;*/
+	display: inline;
+	position: absolute;
+	margin: auto;
+}
