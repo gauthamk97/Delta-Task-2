@@ -1,13 +1,16 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, playerWidth, playerHeight, playerYPos=0;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0;
 
 var yVel=0;
 var grav=0.6;
 
 cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
+obstaclesXPositions = [cWidth*0.15, cWidth*0.5, cWidth*0.85];
+
 var cloudLeftMove = [0,0,0,0];
+var obstaclesLeftMove = [0,0,0];
 
 var i = 0;
 
@@ -42,15 +45,29 @@ function animate() {
 	context.fillStyle = 'white';
 	cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
 	cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
+	obstaclesXPositions = [cWidth*0.15, cWidth*0.5, cWidth*0.85];
 
 	for (i=0;i<4;i++) {
-		cloudLeftMove[i]+=0.005;
+
+		//Cloud movement
+		cloudLeftMove[i]+=0.002;
 		
-		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.14)) {
+		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.1)) {
 			cloudLeftMove[i] = (cloudXPositions[i]-cWidth)/cWidth;
 		}
 
-		context.fillRect(cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],canvas.width*0.1, canvas.width*0.05);
+		context.fillStyle = 'white';
+		context.fillRect(cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.1, cWidth*0.05);
+
+		//Obstactles movement
+		obstaclesLeftMove[i]+=0.005;
+
+		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.01)) {
+			obstaclesLeftMove[i] = (obstaclesXPositions[i]-cWidth)/cWidth;
+		}
+
+		context.fillStyle = 'blue';
+		context.fillRect(obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(cWidth*0.03), cWidth*0.01, cWidth*0.03);
 	}
 
 	//Create Player
