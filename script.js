@@ -14,6 +14,9 @@ var obstaclesLeftMove = [0,0,0];
 
 var i = 0;
 
+//Event Listener for space bar
+window.addEventListener('keydown', keyPressed, false);
+
 function animate() {
 
 	requestAnimationFrame(animate);
@@ -81,20 +84,12 @@ function animate() {
 		if (playerYPos < 0) {
 			playerYPos = 0;
 		}
-		document.body.onkeypress = null;
+		window.removeEventListener('keydown', keyPressed);
 	}
 
 	else {
 		yVel = 0;
-		playerYPos = 0;
-		document.body.onkeypress = function(e) {
-
-			if (e.keyCode==32) { //Space Bar was pressed
-				yVel = 0.018;
-				cHeight = window.innerWidth/2;
-				playerYPos += (yVel*cHeight);
-			}
-		}
+		window.addEventListener('keydown', keyPressed, false);
 	}
 
 	context.fillRect(40,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
@@ -102,8 +97,7 @@ function animate() {
 
 animate();
 
-document.body.onkeypress = function(e) {
-
+function keyPressed(e) {
 	if (e.keyCode==32) { //Space Bar was pressed
 		yVel = 0.018;
 		cHeight = window.innerWidth/2;
