@@ -3,7 +3,7 @@ var context = canvas.getContext('2d');
 var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0;
 
 var yVel=0;
-var grav=0.6;
+var grav=0.001;
 
 cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
@@ -77,7 +77,10 @@ function animate() {
 
 	if (playerYPos>0) {
 		yVel -= grav;
-		playerYPos += yVel;
+		playerYPos += (yVel*cHeight);
+		if (playerYPos < 0) {
+			playerYPos = 0;
+		}
 		document.body.onkeypress = null;
 	}
 
@@ -87,8 +90,9 @@ function animate() {
 		document.body.onkeypress = function(e) {
 
 			if (e.keyCode==32) { //Space Bar was pressed
-				yVel = 10;
-				playerYPos += yVel;
+				yVel = 0.018;
+				cHeight = window.innerWidth/2;
+				playerYPos += (yVel*cHeight);
 			}
 		}
 	}
@@ -101,7 +105,8 @@ animate();
 document.body.onkeypress = function(e) {
 
 	if (e.keyCode==32) { //Space Bar was pressed
-		yVel = 10;
-		playerYPos += yVel;
+		yVel = 0.018;
+		cHeight = window.innerWidth/2;
+		playerYPos += (yVel*cHeight);
 	}
 }
