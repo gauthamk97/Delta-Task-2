@@ -1,6 +1,6 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf;
 
 var yVel=0;
 var grav=0.001;
@@ -19,7 +19,7 @@ window.addEventListener('keydown', keyPressed, false);
 
 function animate() {
 
-	requestAnimationFrame(animate);
+	raf = window.requestAnimationFrame(animate);
 
 	//Resizes canvas on changing browser size
 	canvas.width = window.innerWidth;
@@ -93,6 +93,8 @@ function animate() {
 	}
 
 	context.fillRect(playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+	checkCollision();
 }
 
 animate();
@@ -102,5 +104,15 @@ function keyPressed(e) {
 		yVel = 0.018;
 		cHeight = window.innerWidth/2;
 		playerYPos += (yVel*cHeight);
+	}
+}
+
+function checkCollision() {
+
+	for (i=0;i<3;i++) {
+		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<cWidth*0.03))
+			console.log('collision detected');
+			// window.alert('you dead');
+			// window.cancelAnimationFrame(raf);
 	}
 }
