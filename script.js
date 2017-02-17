@@ -92,7 +92,7 @@ function animate() {
 		window.addEventListener('keydown', keyPressed, false);
 	}
 
-	context.fillRect(40,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+	context.fillRect(playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
 }
 
 animate();
