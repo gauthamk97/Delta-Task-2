@@ -14,6 +14,18 @@ var obstaclesLeftMove = [0,0,0];
 
 var i = 0;
 
+//Sprites
+var framenumber = 0;
+var lukeRunning = new Image();
+lukeRunning.src = "Assets/lukeRunning.png";
+var lukeRunSpritePosition = 0;
+var lukeRunSpeed = 5; //Number of frames per which luke runs. Lower is faster.
+
+var lukeJumping = new Image();
+lukeJumping.src = "Assets/lukeJumping.png";
+var lukeJumpSpritePosition = 0;
+var lukeJumpSpeed = 5; //Number of frames per which luke jumps. Lower is faster.
+
 //Event Listener for space bar
 window.addEventListener('keydown', keyPressed, false);
 
@@ -74,25 +86,51 @@ function animate() {
 	}
 
 	//Create Player
-	context.fillStyle = 'red';
-	playerWidth = cWidth*0.05;
-	playerHeight = playerWidth;
+	
 
+	framenumber++;
+
+	//Currently Jumping
 	if (playerYPos>0) {
+
+		playerWidth = cWidth*0.1;
+		playerHeight = cWidth*0.06;
+
 		yVel -= grav;
 		playerYPos += (yVel*cHeight);
 		if (playerYPos < 0) {
 			playerYPos = 0;
 		}
 		window.removeEventListener('keydown', keyPressed);
+		context.drawImage(lukeJumping,lukeJumpSpritePosition,0,35,54,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+		if (framenumber%lukeJumpSpeed == 0) {
+			lukeJumpSpritePosition += (299/7);
+			if (lukeJumpSpritePosition >= 334) {
+				lukeJumpSpritePosition = 0;
+			}	
+			framenumber = 0;
+		}
 	}
 
+	//Not jumping
 	else {
+
+		playerWidth = cWidth*0.1;
+		playerHeight = playerWidth;
+
 		yVel = 0;
 		window.addEventListener('keydown', keyPressed, false);
-	}
+		context.drawImage(lukeRunning,lukeRunSpritePosition,0,32,47,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
 
-	context.fillRect(playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+		if (framenumber%lukeRunSpeed == 0) {
+			lukeRunSpritePosition += 32;
+			if (lukeRunSpritePosition == 256) {
+				lukeRunSpritePosition = 0;
+			}	
+			framenumber = 0;
+		}
+	}
 
 	checkCollision();
 }
@@ -110,9 +148,11 @@ function keyPressed(e) {
 function checkCollision() {
 
 	for (i=0;i<3;i++) {
-		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<cWidth*0.03))
+		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<cWidth*0.03)) {
 			console.log('collision detected');
-			// window.alert('you dead');
-			// window.cancelAnimationFrame(raf);
+			window.cancelAnimationFrame(raf);
+			window.alert('you dead');
+			window.location.reload();
+		}
 	}
 }
