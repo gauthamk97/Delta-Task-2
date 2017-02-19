@@ -193,7 +193,7 @@ function keyPressed(e) {
 		currentlySwinging = false;
 	}
 
-	else if (e.keyCode==78 && !currentlySwinging) {
+	else if (e.keyCode==77 && !currentlySwinging) {
 		currentlySwinging = true;
 		swingFrameNumber = 1;
 		lukeSwingSpritePosition=0;
