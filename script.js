@@ -7,7 +7,7 @@ var grav=0.001;
 
 cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
-obstaclesXPositions = [cWidth*0.15, cWidth*0.5, cWidth*0.85];
+obstaclesXPositions = [cWidth*1.15, cWidth*1.5, cWidth*1.85];
 
 var cloudLeftMove = [0,0,0,0];
 var obstaclesLeftMove = [0,0,0];
@@ -48,7 +48,7 @@ function animate() {
 	context.fillStyle = 'white';
 	cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
 	cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
-	obstaclesXPositions = [cWidth*0.15, cWidth*0.5, cWidth*0.85];
+	obstaclesXPositions = [cWidth*1.15, cWidth*1.5, cWidth*1.85];
 
 	for (i=0;i<4;i++) {
 
