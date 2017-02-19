@@ -26,14 +26,14 @@ lukeJumping.src = "Assets/lukeJumping.png";
 var lukeJumpSpritePosition = 0; //Position within the png
 var lukeJumpSpeed = 5; //Number of frames per which luke jumps. Lower is faster.
 
-var lukeAttack = new Image();
-lukeAttack.src = "Assets/lukeAttack.png";
-var lukeAttackSpritePosition = 0; //Position within the png
-var lukeAttackSpeed = 5; //Number of frames per which luke attacks. Lower is faster.
-var attackFrameNumber = 0;
+var lukeSwing = new Image();
+lukeSwing.src = "Assets/lukeSwing.png";
+var lukeSwingSpritePosition = 0; //Position within the png
+var lukeSwingSpeed = 5; //Number of frames per which luke swings. Lower is faster.
+var swingFrameNumber = 0;
 
 //States
-var currentlyAttacking = false;
+var currentlySwinging = false;
 var currentlyJumping = false;
 
 //Event Listener for space bar
@@ -97,7 +97,7 @@ function animate() {
 
 	//Create Player
 	playerWidth = cWidth*0.05;
-	attackFrameNumber++;
+	swingFrameNumber++;
 	framenumber++;
 
 	//Currently Jumping
@@ -112,17 +112,17 @@ function animate() {
 		}
 		currentlyJumping = true;
 
-		if (currentlyAttacking) {
+		if (currentlySwinging) {
 
 			playerHeight = playerWidth*43/24;
 
-			context.drawImage(lukeAttack,lukeAttackSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+			context.drawImage(lukeSwing,lukeSwingSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
 
-			if (attackFrameNumber%lukeAttackSpeed == 0) {
-				lukeAttackSpritePosition += (153/4);
-				if (lukeAttackSpritePosition >= 153) {
-					lukeAttackSpritePosition=0;
-					currentlyAttacking = false
+			if (swingFrameNumber%lukeSwingSpeed == 0) {
+				lukeSwingSpritePosition += (153/4);
+				if (lukeSwingSpritePosition >= 153) {
+					lukeSwingSpritePosition=0;
+					currentlySwinging = false
 				}	
 				framenumber = 0;
 			}
@@ -145,17 +145,17 @@ function animate() {
 	//Not jumping
 	else {
 
-		if (currentlyAttacking) {
+		if (currentlySwinging) {
 
 			playerHeight = playerWidth*43/24;
 
-			context.drawImage(lukeAttack,lukeAttackSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+			context.drawImage(lukeSwing,lukeSwingSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
 
-			if (attackFrameNumber%lukeAttackSpeed == 0) {
-				lukeAttackSpritePosition += (153/4);
-				if (lukeAttackSpritePosition >= 153) {
-					lukeAttackSpritePosition=0;
-					currentlyAttacking = false
+			if (swingFrameNumber%lukeSwingSpeed == 0) {
+				lukeSwingSpritePosition += (153/4);
+				if (lukeSwingSpritePosition >= 153) {
+					lukeSwingSpritePosition=0;
+					currentlySwinging = false
 				}	
 				framenumber = 0;
 			}
@@ -190,13 +190,13 @@ function keyPressed(e) {
 		yVel = 0.018;
 		cHeight = window.innerWidth/2;
 		playerYPos += (yVel*cHeight);
-		currentlyAttacking = false;
+		currentlySwinging = false;
 	}
 
-	else if (e.keyCode==78 && !currentlyAttacking) {
-		currentlyAttacking = true;
-		attackFrameNumber = 1;
-		lukeAttackSpritePosition=0;
+	else if (e.keyCode==78 && !currentlySwinging) {
+		currentlySwinging = true;
+		swingFrameNumber = 1;
+		lukeSwingSpritePosition=0;
 	}
 
 	else {
