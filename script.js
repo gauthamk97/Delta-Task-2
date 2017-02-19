@@ -18,13 +18,23 @@ var i = 0;
 var framenumber = 0;
 var lukeRunning = new Image();
 lukeRunning.src = "Assets/lukeRunning.png";
-var lukeRunSpritePosition = 0;
+var lukeRunSpritePosition = 0; //Position within the png
 var lukeRunSpeed = 5; //Number of frames per which luke runs. Lower is faster.
 
 var lukeJumping = new Image();
 lukeJumping.src = "Assets/lukeJumping.png";
-var lukeJumpSpritePosition = 0;
+var lukeJumpSpritePosition = 0; //Position within the png
 var lukeJumpSpeed = 5; //Number of frames per which luke jumps. Lower is faster.
+
+var lukeAttack = new Image();
+lukeAttack.src = "Assets/lukeAttack.png";
+var lukeAttackSpritePosition = 0; //Position within the png
+var lukeAttackSpeed = 5; //Number of frames per which luke attacks. Lower is faster.
+var attackFrameNumber = 0;
+
+//States
+var currentlyAttacking = false;
+var currentlyJumping = false;
 
 //Event Listener for space bar
 window.addEventListener('keydown', keyPressed, false);
@@ -86,14 +96,13 @@ function animate() {
 	}
 
 	//Create Player
-	
-
+	playerWidth = cWidth*0.05;
+	attackFrameNumber++;
 	framenumber++;
 
 	//Currently Jumping
 	if (playerYPos>0) {
 
-		playerWidth = cWidth*0.05;
 		playerHeight = playerWidth*54/35;
 
 		yVel -= grav;
@@ -101,35 +110,74 @@ function animate() {
 		if (playerYPos < 0) {
 			playerYPos = 0;
 		}
-		window.removeEventListener('keydown', keyPressed);
-		context.drawImage(lukeJumping,lukeJumpSpritePosition,0,35,54,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+		currentlyJumping = true;
 
-		if (framenumber%lukeJumpSpeed == 0) {
-			lukeJumpSpritePosition += (299/7);
-			if (lukeJumpSpritePosition >= 334) {
-				lukeJumpSpritePosition = 0;
-			}	
-			framenumber = 0;
+		if (currentlyAttacking) {
+
+			playerHeight = playerWidth*43/24;
+
+			context.drawImage(lukeAttack,lukeAttackSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+			if (attackFrameNumber%lukeAttackSpeed == 0) {
+				lukeAttackSpritePosition += (153/4);
+				if (lukeAttackSpritePosition >= 153) {
+					lukeAttackSpritePosition=0;
+					currentlyAttacking = false
+				}	
+				framenumber = 0;
+			}
 		}
+
+		else {
+			context.drawImage(lukeJumping,lukeJumpSpritePosition,0,35,54,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+			if (framenumber%lukeJumpSpeed == 0) {
+				lukeJumpSpritePosition += (299/7);
+				if (lukeJumpSpritePosition >= 334) {
+					lukeJumpSpritePosition = 0;
+				}	
+				framenumber = 0;
+			}
+		}
+		
 	}
 
 	//Not jumping
 	else {
 
-		playerWidth = cWidth*0.05;
-		playerHeight = playerWidth*43/24;
+		if (currentlyAttacking) {
 
-		yVel = 0;
-		window.addEventListener('keydown', keyPressed, false);
-		context.drawImage(lukeRunning,lukeRunSpritePosition,0,24,43,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+			playerHeight = playerWidth*43/24;
 
-		if (framenumber%lukeRunSpeed == 0) {
-			lukeRunSpritePosition += (221/7);
-			if (lukeRunSpritePosition >= 245) {
-				lukeRunSpritePosition = 0;
-			}	
-			framenumber = 0;
+			context.drawImage(lukeAttack,lukeAttackSpritePosition,0,34,34,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+			if (attackFrameNumber%lukeAttackSpeed == 0) {
+				lukeAttackSpritePosition += (153/4);
+				if (lukeAttackSpritePosition >= 153) {
+					lukeAttackSpritePosition=0;
+					currentlyAttacking = false
+				}	
+				framenumber = 0;
+			}
 		}
+
+		else {
+
+			playerHeight = playerWidth*43/24;
+
+			yVel = 0;
+			currentlyJumping = false;
+			context.drawImage(lukeRunning,lukeRunSpritePosition,0,24,43,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+
+			if (framenumber%lukeRunSpeed == 0) {
+				lukeRunSpritePosition += (221/7);
+				if (lukeRunSpritePosition >= 245) {
+					lukeRunSpritePosition = 0;
+				}	
+				framenumber = 0;
+			}
+		}
+		
 	}
 
 	checkCollision();
@@ -138,10 +186,21 @@ function animate() {
 animate();
 
 function keyPressed(e) {
-	if (e.keyCode==32) { //Space Bar was pressed
+	if (e.keyCode==32 && !currentlyJumping) { //Space Bar was pressed
 		yVel = 0.018;
 		cHeight = window.innerWidth/2;
 		playerYPos += (yVel*cHeight);
+		currentlyAttacking = false;
+	}
+
+	else if (e.keyCode==78 && !currentlyAttacking) {
+		currentlyAttacking = true;
+		attackFrameNumber = 1;
+		lukeAttackSpritePosition=0;
+	}
+
+	else {
+		console.log(e.keyCode);
 	}
 }
 
