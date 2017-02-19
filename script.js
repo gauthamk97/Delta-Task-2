@@ -93,8 +93,8 @@ function animate() {
 	//Currently Jumping
 	if (playerYPos>0) {
 
-		playerWidth = cWidth*0.1;
-		playerHeight = cWidth*0.06;
+		playerWidth = cWidth*0.05;
+		playerHeight = playerWidth*54/35;
 
 		yVel -= grav;
 		playerYPos += (yVel*cHeight);
@@ -116,16 +116,16 @@ function animate() {
 	//Not jumping
 	else {
 
-		playerWidth = cWidth*0.1;
-		playerHeight = playerWidth;
+		playerWidth = cWidth*0.05;
+		playerHeight = playerWidth*43/24;
 
 		yVel = 0;
 		window.addEventListener('keydown', keyPressed, false);
-		context.drawImage(lukeRunning,lukeRunSpritePosition,0,32,47,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
+		context.drawImage(lukeRunning,lukeRunSpritePosition,0,24,43,playerWidth,cHeight-platformHeight-playerHeight-playerYPos, playerWidth, playerHeight);
 
 		if (framenumber%lukeRunSpeed == 0) {
-			lukeRunSpritePosition += 32;
-			if (lukeRunSpritePosition == 256) {
+			lukeRunSpritePosition += (221/7);
+			if (lukeRunSpritePosition >= 245) {
 				lukeRunSpritePosition = 0;
 			}	
 			framenumber = 0;
