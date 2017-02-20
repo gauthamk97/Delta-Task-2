@@ -119,7 +119,7 @@ function animate() {
 				randVal = Math.floor(Math.random()*5);
 				console.log(randVal);
 				//Fire blaster
-				if (true) {
+				if (randVal==0 || randVal==1) {
 					console.log('fired!');
 					didObstacleShoot[i] = true;
 					shouldFireBlaster[i] = true;
@@ -176,7 +176,6 @@ function animate() {
 		//Drawing blaster if fired
 
 		if (didObstacleShoot[i]) {
-			console.log('here');
 			blasterYPosition = cHeight-platformHeight-(36*trooperHeight/53);
 			blasterWidth = cWidth*0.007;
 			blasterHeight = blasterWidth*200/455;
