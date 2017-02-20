@@ -14,6 +14,7 @@ var obstaclesLeftMove = [0,0,0];
 
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
+var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight;
 
 var i = 0;
 
@@ -40,6 +41,9 @@ cloneTrooper.src = "Assets/cloneTrooper.gif";
 
 var backgroundImage = new Image();
 backgroundImage.src = "Assets/background.png";
+
+var boltImage = new Image();
+boltImage.src = "Assets/bolt.png";
 
 //States
 var currentlySwinging = false;
@@ -101,7 +105,9 @@ function animate() {
 	for (i=0;i<2;i++) {
 
 		obstaclesLeftMove[i]+=0.005;
-		// console.log(obstaclesLeftMove[i]);
+		if (didObstacleShoot[i]) {
+			blasterLeftMove[i]+=0.01
+		}
 
 		//Checking if we can fire blaster
 		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth))/cWidth <= 0.5 && (checkedIfCanFire[i]==false)) {
@@ -113,11 +119,15 @@ function animate() {
 				randVal = Math.floor(Math.random()*5);
 				console.log(randVal);
 				//Fire blaster
-				if (randVal==0 || randVal==1) {
+				if (true) {
 					console.log('fired!');
 					didObstacleShoot[i] = true;
 					shouldFireBlaster[i] = true;
 					firedHowLongAgo[i] = 0;
+
+					//Initializing blaster positions
+					blasterXPositions[i] = obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth);
+					blasterLeftMove[i] = 0;
 				}
 			}
 		}
@@ -127,6 +137,7 @@ function animate() {
 			obstaclesLeftMove[i] = (obstaclesXPositions[i]-cWidth)/cWidth;
 			didObstacleShoot[i] = false;
 			checkedIfCanFire[i] = false;
+			blasterXPositions[i]=0;
 		}
 
 		if (shouldFireBlaster[i]) {
@@ -160,6 +171,17 @@ function animate() {
 			trooperWidth = cWidth*0.05
 			trooperHeight = trooperWidth*53/43;
 			context.drawImage(cloneTrooper,0,0,36,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);	
+		}
+
+		//Drawing blaster if fired
+
+		if (didObstacleShoot[i]) {
+			console.log('here');
+			blasterYPosition = cHeight-platformHeight-(36*trooperHeight/53);
+			blasterWidth = cWidth*0.007;
+			blasterHeight = blasterWidth*200/455;
+			context.drawImage(boltImage,0,0,455,40,blasterXPositions[i]-(blasterLeftMove[i]*cWidth),blasterYPosition,blasterWidth,blasterHeight);
+
 		}
 		
 	}
