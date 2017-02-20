@@ -1,6 +1,6 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
 
 var yVel=0;
 var grav=0.001;
@@ -19,7 +19,7 @@ var framenumber = 0;
 var lukeRunning = new Image();
 lukeRunning.src = "Assets/lukeRunning.png";
 var lukeRunSpritePosition = 0; //Position within the png
-var lukeRunSpeed = 5; //Number of frames per which luke runs. Lower is faster.
+var lukeRunSpeed = 4; //Number of frames per which luke runs. Lower is faster.
 
 var lukeJumping = new Image();
 lukeJumping.src = "Assets/lukeJumping.png";
@@ -31,6 +31,12 @@ lukeSwing.src = "Assets/lukeSwing.png";
 var lukeSwingSpritePosition = 0; //Position within the png
 var lukeSwingSpeed = 5; //Number of frames per which luke swings. Lower is faster.
 var swingFrameNumber = 0;
+
+var cloneTrooper = new Image();
+cloneTrooper.src = "Assets/cloneTrooper.gif";
+
+var backgroundImage = new Image();
+backgroundImage.src = "Assets/background.png";
 
 //States
 var currentlySwinging = false;
@@ -61,9 +67,12 @@ function animate() {
 	//Clears canvas
 	context.clearRect(0,0,cWidth,cHeight);
 
+	//Creates background image
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,0,0,cWidth,cHeight);
+
 	//Creates Platform
-	context.fillStyle = 'green';
-	platformHeight = cHeight*0.35;
+	context.fillStyle = '#222222';
+	platformHeight = cHeight*0.24;
 	context.fillRect(0,cHeight-platformHeight,cWidth,platformHeight);
 
 	//Create Clouds
@@ -87,12 +96,13 @@ function animate() {
 		//Obstactles movement
 		obstaclesLeftMove[i]+=0.005;
 
-		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.01)) {
+		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.05)) {
 			obstaclesLeftMove[i] = (obstaclesXPositions[i]-cWidth)/cWidth;
 		}
 
-		context.fillStyle = 'blue';
-		context.fillRect(obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(cWidth*0.03), cWidth*0.01, cWidth*0.03);
+		trooperWidth = cWidth*0.05
+		trooperHeight = trooperWidth*53/43;
+		context.drawImage(cloneTrooper,0,0,43,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);
 	}
 
 	//Create Player
@@ -187,7 +197,7 @@ animate();
 
 function keyPressed(e) {
 	if (e.keyCode==32 && !currentlyJumping) { //Space Bar was pressed
-		yVel = 0.018;
+		yVel = 0.019;
 		cHeight = window.innerWidth/2;
 		playerYPos += (yVel*cHeight);
 		currentlySwinging = false;
@@ -207,7 +217,7 @@ function keyPressed(e) {
 function checkCollision() {
 
 	for (i=0;i<3;i++) {
-		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<cWidth*0.03)) {
+		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<trooperHeight)) {
 			console.log('collision detected');
 			window.cancelAnimationFrame(raf);
 			window.alert('you dead');
