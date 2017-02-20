@@ -1,13 +1,14 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight, didObstacleShoot;
 
 var yVel=0;
 var grav=0.001;
 
 cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
-obstaclesXPositions = [cWidth*1.15, cWidth*1.5, cWidth*1.85];
+obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
+didObstacleShoot = [false,false,false];
 
 var cloudLeftMove = [0,0,0,0];
 var obstaclesLeftMove = [0,0,0];
@@ -42,7 +43,7 @@ backgroundImage.src = "Assets/background.png";
 var currentlySwinging = false;
 var currentlyJumping = false;
 
-//Event Listener for space bar
+//Event Listener for keyboard presses
 window.addEventListener('keydown', keyPressed, false);
 
 function animate() {
@@ -79,11 +80,11 @@ function animate() {
 	context.fillStyle = 'white';
 	cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
 	cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
-	obstaclesXPositions = [cWidth*1.15, cWidth*1.5, cWidth*1.85];
+	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
+	//Cloud movement
 	for (i=0;i<4;i++) {
 
-		//Cloud movement
 		cloudLeftMove[i]+=0.002;
 		
 		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.1)) {
@@ -92,8 +93,11 @@ function animate() {
 
 		context.fillStyle = 'white';
 		context.fillRect(cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.1, cWidth*0.05);
+	}
 
-		//Obstactles movement
+	//Obstactles movement
+	for (i=0;i<2;i++) {
+
 		obstaclesLeftMove[i]+=0.005;
 
 		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.05)) {
