@@ -119,7 +119,7 @@ function animate() {
 				randVal = Math.floor(Math.random()*5);
 				console.log(randVal);
 				//Fire blaster
-				if (randVal==0 || randVal==1) {
+				if (true) {
 					console.log('fired!');
 					didObstacleShoot[i] = true;
 					shouldFireBlaster[i] = true;
@@ -296,7 +296,8 @@ function keyPressed(e) {
 
 function checkCollision() {
 
-	for (i=0;i<3;i++) {
+	//Obstacle collision check
+	for (i=0;i<2;i++) {
 		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<trooperHeight)) {
 			console.log('collision detected');
 			window.cancelAnimationFrame(raf);
@@ -304,4 +305,17 @@ function checkCollision() {
 			window.location.reload();
 		}
 	}
+
+	//Blaster collision check
+	for (i=0;i<2;i++) {
+		if (didObstacleShoot[i]) {
+			if ((blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) < 2*playerWidth && (blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) > playerWidth && playerYPos<(cHeight-platformHeight-blasterYPosition) && !currentlySwinging) {
+				console.log('collision detected');
+				window.cancelAnimationFrame(raf);
+				window.alert('you dead');
+				window.location.reload();
+			}
+		}
+	}
+
 }
