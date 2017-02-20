@@ -159,7 +159,7 @@ function animate() {
 		else {
 			trooperWidth = cWidth*0.05
 			trooperHeight = trooperWidth*53/43;
-			context.drawImage(cloneTrooper,0,0,46,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);	
+			context.drawImage(cloneTrooper,0,0,36,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);	
 		}
 		
 	}
