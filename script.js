@@ -14,7 +14,7 @@ var obstaclesLeftMove = [0,0,0];
 
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
-var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight;
+var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
 
 var i = 0;
 
@@ -105,9 +105,6 @@ function animate() {
 	for (i=0;i<2;i++) {
 
 		obstaclesLeftMove[i]+=0.005;
-		if (didObstacleShoot[i]) {
-			blasterLeftMove[i]+=0.01
-		}
 
 		//Checking if we can fire blaster
 		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth))/cWidth <= 0.5 && (checkedIfCanFire[i]==false)) {
@@ -138,6 +135,7 @@ function animate() {
 			didObstacleShoot[i] = false;
 			checkedIfCanFire[i] = false;
 			blasterXPositions[i]=0;
+			blasterDeflected[i] = false;
 		}
 
 		if (shouldFireBlaster[i]) {
@@ -176,11 +174,21 @@ function animate() {
 		//Drawing blaster if fired
 
 		if (didObstacleShoot[i]) {
-			blasterYPosition = cHeight-platformHeight-(36*trooperHeight/53);
+
 			blasterWidth = cWidth*0.007;
 			blasterHeight = blasterWidth*200/455;
-			context.drawImage(boltImage,0,0,455,40,blasterXPositions[i]-(blasterLeftMove[i]*cWidth),blasterYPosition,blasterWidth,blasterHeight);
 
+			if (!blasterDeflected[i]) {
+				blasterLeftMove[i]+=0.01
+				blasterYPosition = cHeight-platformHeight-(36*trooperHeight/53);
+				context.drawImage(boltImage,0,0,455,40,blasterXPositions[i]-(blasterLeftMove[i]*cWidth),blasterYPosition,blasterWidth,blasterHeight);
+			}
+
+			else {
+				blasterLeftMove[i]-=0.01
+				context.drawImage(boltImage,0,0,455,40,blasterXPositions[i]-(blasterLeftMove[i]*cWidth),blasterYPosition,blasterWidth,blasterHeight);
+			}
+			
 		}
 		
 	}
@@ -309,11 +317,19 @@ function checkCollision() {
 	//Blaster collision check
 	for (i=0;i<2;i++) {
 		if (didObstacleShoot[i]) {
-			if ((blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) < 2*playerWidth && (blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) > playerWidth && playerYPos<(cHeight-platformHeight-blasterYPosition) && !currentlySwinging) {
-				console.log('collision detected');
-				window.cancelAnimationFrame(raf);
-				window.alert('you dead');
-				window.location.reload();
+			if ((blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) < 2*playerWidth && (blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) > playerWidth && playerYPos<(cHeight-platformHeight-blasterYPosition)) {
+				
+				if (!currentlySwinging && !blasterDeflected[i]) {
+					console.log('collision detected');
+					window.cancelAnimationFrame(raf);
+					window.alert('you dead');
+					window.location.reload();
+				}
+				
+				else {
+					blasterDeflected[i] = true;
+				}
+
 			}
 		}
 	}
