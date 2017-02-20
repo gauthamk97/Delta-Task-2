@@ -1,6 +1,6 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight, didObstacleShoot;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
 
 var yVel=0;
 var grav=0.001;
@@ -8,10 +8,12 @@ var grav=0.001;
 cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
 obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
-didObstacleShoot = [false,false,false];
 
 var cloudLeftMove = [0,0,0,0];
 var obstaclesLeftMove = [0,0,0];
+
+//Blaster firing variables
+var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
 
 var i = 0;
 
@@ -99,14 +101,67 @@ function animate() {
 	for (i=0;i<2;i++) {
 
 		obstaclesLeftMove[i]+=0.005;
+		// console.log(obstaclesLeftMove[i]);
 
-		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.05)) {
-			obstaclesLeftMove[i] = (obstaclesXPositions[i]-cWidth)/cWidth;
+		//Checking if we can fire blaster
+		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth))/cWidth <= 0.5 && (checkedIfCanFire[i]==false)) {
+			
+			checkedIfCanFire[i] = true;
+
+			if (!didObstacleShoot[i]) {
+				console.log('checking firing');
+				randVal = Math.floor(Math.random()*5);
+				console.log(randVal);
+				//Fire blaster
+				if (randVal==0 || randVal==1) {
+					console.log('fired!');
+					didObstacleShoot[i] = true;
+					shouldFireBlaster[i] = true;
+					firedHowLongAgo[i] = 0;
+				}
+			}
 		}
 
-		trooperWidth = cWidth*0.05
-		trooperHeight = trooperWidth*53/43;
-		context.drawImage(cloneTrooper,0,0,43,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);
+		//Wrapping around when reaches end of screen
+		if ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < (-cWidth*0.05)) {
+			obstaclesLeftMove[i] = (obstaclesXPositions[i]-cWidth)/cWidth;
+			didObstacleShoot[i] = false;
+			checkedIfCanFire[i] = false;
+		}
+
+		if (shouldFireBlaster[i]) {
+
+			//Reset to normal sprite
+			if (firedHowLongAgo[i] >= 10) {
+				shouldFireBlaster[i] = false;
+				firedHowLongAgo[i]=0;
+			}
+
+			//Recoil sprite
+			else if (firedHowLongAgo[i]>=8 && firedHowLongAgo[i]<10) {
+				trooperWidth = cWidth*0.05*36/43
+				trooperHeight = trooperWidth*53/36
+				context.drawImage(cloneTrooper,43,0,36,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);
+			}
+
+			//Firing sprite
+			else {
+				trooperWidth = cWidth*0.05*46/43
+				trooperHeight = trooperWidth*53/46;
+				context.drawImage(cloneTrooper,86,0,46,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);
+			}
+
+			firedHowLongAgo[i]++;
+
+		}
+
+		//Normal sprite
+		else {
+			trooperWidth = cWidth*0.05
+			trooperHeight = trooperWidth*53/43;
+			context.drawImage(cloneTrooper,0,0,46,53,obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth), cHeight-platformHeight-(trooperHeight), trooperWidth, trooperHeight);	
+		}
+		
 	}
 
 	//Create Player
