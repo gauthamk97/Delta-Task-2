@@ -19,6 +19,9 @@ var didCloudFire = [false, false, false, false], cloudBlasterYPosition = [0,0,0,
 
 var i = 0;
 
+//Background movement variable
+var backgroundLeftMove = 0;
+
 //Sprites
 var framenumber = 0;
 var lukeRunning = new Image();
@@ -79,7 +82,13 @@ function animate() {
 	context.clearRect(0,0,cWidth,cHeight);
 
 	//Creates background image
-	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,0,0,cWidth,cHeight);
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,-backgroundLeftMove,0,cWidth,cHeight);
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,cWidth-backgroundLeftMove,0,cWidth,cHeight);
+	backgroundLeftMove++;
+
+	if (backgroundLeftMove==cWidth) {
+		backgroundLeftMove=0;
+	}
 
 	//Creates Platform
 	context.fillStyle = '#222222';
