@@ -82,11 +82,11 @@ function animate() {
 	context.clearRect(0,0,cWidth,cHeight);
 
 	//Creates background image
-	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,-backgroundLeftMove,0,cWidth,cHeight);
-	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,cWidth-backgroundLeftMove,0,cWidth,cHeight);
-	backgroundLeftMove++;
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,-(backgroundLeftMove*cWidth),0,cWidth,cHeight);
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,cWidth*(1-backgroundLeftMove),0,cWidth,cHeight);
+	backgroundLeftMove+=0.001;
 
-	if (backgroundLeftMove==cWidth) {
+	if (backgroundLeftMove>=1) {
 		backgroundLeftMove=0;
 	}
 
