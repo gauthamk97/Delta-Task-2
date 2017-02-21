@@ -70,6 +70,9 @@ logo.src = "Assets/starWarsLogo.png";
 //States
 var currentlySwinging, currentlyJumping;
 
+//Audio Files
+var themeSong = new Audio('Assets/themeSong.ogg');
+
 //Event Listener for keyboard presses
 window.addEventListener('keydown', keyPressedAtHomeScreen, false);
 
@@ -120,10 +123,13 @@ function drawNecessities() {
 	context.font = fontSize+"px Verdana";
 	context.fillText("Press space button to begin",cWidth/2, cHeight/2);
 
+	themeSong.play();
+
 }
 
 function keyPressedAtHomeScreen(e) {
 	if (e.keyCode==32) { //Begin game 
+		themeSong.pause();
 		initialAssignments();
 		animate();
 		window.removeEventListener('keydown', keyPressedAtHomeScreen);
