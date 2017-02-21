@@ -363,6 +363,18 @@ function keyPressed(e) {
 	}
 
 	else if (e.keyCode==80) {
+
+		var fontSize=10/749*cWidth;
+		context.fillStyle = '#FFFFFF';
+		context.textAlign = "center";
+
+		context.font = fontSize+"px Verdana";
+		context.fillText("Press any button to continue",cWidth/2, cHeight*0.53);
+
+		fontSize=15/749*cWidth;
+		context.font = fontSize+"px Verdana";
+		context.fillText("Paused",cWidth/2, cHeight*0.47);
+
 		window.cancelAnimationFrame(raf);
 		isCurrentlyPaused=true;
 	}
