@@ -141,6 +141,15 @@ function keyPressedAtHomeScreen(e) {
 	}
 }
 
+function restartGame(e) {
+	if (e.keyCode==13) {
+		initialAssignments();
+		animate();
+		window.removeEventListener('keydown', keyPressedAtHomeScreen);
+		window.addEventListener('keydown', keyPressed, false);
+	}
+}
+
 function initialAssignments() {
 
 	//Canvas variables
@@ -572,7 +581,7 @@ function dead() {
 
 	//Event listeners
 	window.removeEventListener('keydown', keyPressed, false);
-	window.addEventListener('keydown', keyPressedAtHomeScreen);
+	window.addEventListener('keydown', restartGame);
 
 	//Text on dying
 	context.fillStyle = '#FFFFFF';
@@ -584,6 +593,6 @@ function dead() {
 
 	fontSize=10/749*cWidth;
 	context.font = fontSize+"px Verdana";
-	context.fillText("Press space to save the galaxy",cWidth/2, cHeight*0.53);
+	context.fillText("Press enter to save the galaxy",cWidth/2, cHeight*0.53);
 
 }
