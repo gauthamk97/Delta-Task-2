@@ -109,7 +109,6 @@ function drawNecessities() {
 	//Creates Platform
 	context.fillStyle = '#222222';
 	platformHeight = cHeight*0.24;
-	context.textAlign = "center";
 	context.fillRect(0,cHeight-platformHeight,cWidth,platformHeight);
 
 	//Draw Star Wars Logo
@@ -553,7 +552,21 @@ function checkCollision() {
 function dead() {
 	console.log('collision detected');
 	window.cancelAnimationFrame(raf);
-	window.alert('you dead');
-	initialAssignments();
-	animate();
+
+	//Event listeners
+	window.removeEventListener('keydown', keyPressed, false);
+	window.addEventListener('keydown', keyPressedAtHomeScreen);
+
+	//Text on dying
+	context.fillStyle = '#FFFFFF';
+	context.textAlign = "center";
+
+	var fontSize=15/749*cWidth;
+	context.font = fontSize+"px Verdana";
+	context.fillText("You Died",cWidth/2, cHeight*0.47);
+
+	fontSize=10/749*cWidth;
+	context.font = fontSize+"px Verdana";
+	context.fillText("Press space to save the galaxy",cWidth/2, cHeight*0.53);
+
 }
