@@ -62,12 +62,79 @@ var boltImage = new Image();
 boltImage.src = "Assets/bolt.png";
 
 var shipImage = new Image();
-shipImage.src = "Assets/ship.png"
+shipImage.src = "Assets/ship.png";
 
+var logo = new Image();
+logo.src = "Assets/starWarsLogo.png";
+
+var wtf=0;
 //States
 var currentlySwinging, currentlyJumping;
 
-initialAssignments();
+//Event Listener for keyboard presses
+window.addEventListener('keydown', keyPressedAtHomeScreen, false);
+
+drawNecessities();
+
+function drawNecessities() {
+
+	draf = window.requestAnimationFrame(drawNecessities);
+
+	//Resizes canvas on changing browser size
+	canvas.width = window.innerWidth;
+	canvas.height = canvas.width/2;
+
+	//Canvas Dimensions
+	cWidth = canvas.width;
+	cHeight = canvas.height;
+	
+	if (window.innerHeight >= cHeight) {
+		canvas.style.marginTop=(window.innerHeight-cHeight)/2 + "px"; //Centers canvas vertically	if browser is larger than canvas
+	}
+	else {
+		canvas.style.marginTop=0; //Canvas starts at (0,0) if browser becomes smaller than canvas
+	}
+	
+	//Clears canvas
+	context.clearRect(0,0,cWidth,cHeight);
+
+	//Creates background image
+	context.drawImage(backgroundImage,0,0,1280,1280*cHeight/cWidth,0,0,cWidth,cHeight);
+
+	//Draw Luke
+	playerWidth = cWidth*0.05;
+	playerHeight = playerWidth*43/24;
+	context.drawImage(lukeRunning,0,0,24,43,playerWidth,cHeight-platformHeight-playerHeight, playerWidth, playerHeight);
+
+	//Creates Platform
+	context.fillStyle = '#222222';
+	platformHeight = cHeight*0.24;
+	context.textAlign = "center";
+	context.fillRect(0,cHeight-platformHeight,cWidth,platformHeight);
+
+	//Draw Star Wars Logo
+	context.drawImage(logo,0,0,300,132,cWidth*0.35,cHeight*0.1,cWidth*0.3,cWidth*0.3*132/300);
+
+	wtf++;
+
+	var fontSize=10/749*cWidth;
+	context.fillStyle = '#FFFFFF';
+	context.textAlign = "center";
+
+	context.font = fontSize+"px Verdana";
+	context.fillText("Press space button to begin",cWidth/2, cHeight/2);
+
+}
+
+function keyPressedAtHomeScreen(e) {
+	if (e.keyCode==32) { //Begin game 
+		initialAssignments();
+		animate();
+		window.removeEventListener('keydown', keyPressedAtHomeScreen);
+		window.addEventListener('keydown', keyPressed, false);
+		window.cancelAnimationFrame(draf);
+	}
+}
 
 function initialAssignments() {
 
@@ -128,9 +195,6 @@ function initialAssignments() {
 	currentlySwinging = false;
 	currentlyJumping = false;
 }
-
-//Event Listener for keyboard presses
-window.addEventListener('keydown', keyPressed, false);
 
 function animate() {
 
@@ -402,8 +466,6 @@ function animate() {
 	checkCollision();
 }
 
-animate();
-
 function keyPressed(e) {
 
 	if (isCurrentlyPaused) {
@@ -492,5 +554,6 @@ function dead() {
 	console.log('collision detected');
 	window.cancelAnimationFrame(raf);
 	window.alert('you dead');
-	window.location.reload();
+	initialAssignments();
+	animate();
 }
