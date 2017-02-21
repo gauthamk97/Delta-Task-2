@@ -332,7 +332,7 @@ animate();
 
 function keyPressed(e) {
 	if (e.keyCode==32 && !currentlyJumping) { //Space Bar was pressed
-		yVel = 0.019;
+		yVel = 0.02;
 		cHeight = window.innerWidth/2;
 		playerYPos += (yVel*cHeight);
 		currentlySwinging = false;
