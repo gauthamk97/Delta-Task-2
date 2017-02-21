@@ -3,6 +3,10 @@
 
 }
 
+#myBody {
+	background-color: black;
+}
+
 #myCanvas {
 	background-color: #999999;
 	/*text-align: center;*/
