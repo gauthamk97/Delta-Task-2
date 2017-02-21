@@ -67,7 +67,6 @@ shipImage.src = "Assets/ship.png";
 var logo = new Image();
 logo.src = "Assets/starWarsLogo.png";
 
-var wtf=0;
 //States
 var currentlySwinging, currentlyJumping;
 
@@ -113,8 +112,6 @@ function drawNecessities() {
 
 	//Draw Star Wars Logo
 	context.drawImage(logo,0,0,300,132,cWidth*0.35,cHeight*0.1,cWidth*0.3,cWidth*0.3*132/300);
-
-	wtf++;
 
 	var fontSize=10/749*cWidth;
 	context.fillStyle = '#FFFFFF';
