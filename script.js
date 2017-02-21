@@ -1,48 +1,56 @@
+//Canvas Variables
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, shipXPositions, shipYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
+var platformHeight, cWidth, cHeight;
 
-var yVel=0;
-var grav=0.001;
+//Request Animation Frame variable
+var raf
 
-shipXPositions = cWidth*8.1
-shipYPositions = cHeight*0.25
-obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
+//Ship and Obstacle Variables
+var shipXPositions, shipYPositions, shipLeftMove, obstaclesLeftMove, obstaclesXPositions, trooperHeight;
 
-var shipLeftMove = 0;
-var obstaclesLeftMove = [0,0];
+//Player variables
+var playerWidth, playerHeight;
 
-var isCurrentlyPaused = false;
+//Jump related variables
+var yVel, playerYPos, grav;
 
-//Blaster firing variables
-var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
-var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
-var didShipFire=false, shipBlasterYPosition = 0, shipBlasterXPosition = 0, shipBlasterLeftMove = 0, shipBlasterWidth, shipBlasterHeight, shipBlasterDeflected=false;
+//Whether paused or not
+var isCurrentlyPaused;
 
-var i = 0;
+//Obstacle Blaster firing variables
+var randVal, shouldFireBlaster, checkedIfCanFire, didObstacleShoot, firedHowLongAgo;
+var blasterXPositions, blasterLeftMove, blasterYPosition, blasterWidth, blasterHeight, blasterDeflected;
+
+//Ship Blaster firing variables
+var didShipFire, shipBlasterYPosition, shipBlasterXPosition, shipBlasterLeftMove, shipBlasterWidth, shipBlasterHeight, shipBlasterDeflected;
+
+//Iterating variable
+var i;
 
 //Background movement variable
-var backgroundLeftMove = 0;
-console.log(cWidth);
-var score=0;
+var backgroundLeftMove;
+
+//Keeping track of score
+var score;
 
 //Sprites
-var framenumber = 0;
+var framenumber;
 var lukeRunning = new Image();
 lukeRunning.src = "Assets/lukeRunning.png";
-var lukeRunSpritePosition = 0; //Position within the png
-var lukeRunSpeed = 4; //Number of frames per which luke runs. Lower is faster.
+var lukeRunSpritePosition; //Position within the png
+var lukeRunSpeed; //Number of frames per which luke runs. Lower is faster.
 
 var lukeJumping = new Image();
 lukeJumping.src = "Assets/lukeJumping.png";
-var lukeJumpSpritePosition = 0; //Position within the png
-var lukeJumpSpeed = 5; //Number of frames per which luke jumps. Lower is faster.
+var lukeJumpSpritePosition; //Position within the png
+var lukeJumpSpeed; //Number of frames per which luke jumps. Lower is faster.
 
 var lukeSwing = new Image();
 lukeSwing.src = "Assets/lukeSwing.png";
-var lukeSwingSpritePosition = 0; //Position within the png
-var lukeSwingSpeed = 5; //Number of frames per which luke swings. Lower is faster.
-var swingFrameNumber = 0;
+var lukeSwingSpritePosition; //Position within the png
+var lukeSwingSpeed; //Number of frames per which luke swings. Lower is faster.
+var swingFrameNumber;
 
 var cloneTrooper = new Image();
 cloneTrooper.src = "Assets/cloneTrooper.gif";
@@ -57,8 +65,69 @@ var shipImage = new Image();
 shipImage.src = "Assets/ship.png"
 
 //States
-var currentlySwinging = false;
-var currentlyJumping = false;
+var currentlySwinging, currentlyJumping;
+
+initialAssignments();
+
+function initialAssignments() {
+
+	//Canvas variables
+	cWidth = window.innerWidth;
+	cHeight = window.innerWidth/2;
+
+	//Jumping related variables
+	playerYPos=0;
+	yVel=0;
+	grav=0.001;
+
+	//Ship Position
+	shipXPositions = cWidth*8.1
+	shipYPositions = cHeight*0.25
+	shipLeftMove = 0;
+
+	//Obstacles Position
+	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
+	obstaclesLeftMove = [0,0];
+
+	//Whether paused or not
+	isCurrentlyPaused = false;
+
+	//Blaster bolts coming from obstacles
+	shouldFireBlaster = [false, false];
+	checkedIfCanFire = [false, false];
+	didObstacleShoot = [false,false];
+	firedHowLongAgo = [0,0];
+	blasterXPositions = [0,0];
+	blasterLeftMove = [0,0];
+	blasterYPosition = 0;
+	blasterDeflected = [false,false];
+
+	//Blaster bolts coming from ship
+	didShipFire=false;
+	shipBlasterYPosition = 0;
+	shipBlasterXPosition = 0;
+	shipBlasterLeftMove = 0;
+	shipBlasterDeflected=false;
+
+	//Iterating variable
+	i = 0;
+
+	backgroundLeftMove = 0;
+	score=0;
+
+	framenumber = 0;
+	lukeRunSpritePosition = 0;
+	lukeRunSpeed = 4;
+	lukeJumpSpritePosition = 0;
+	lukeJumpSpeed = 5;
+	lukeSwingSpritePosition = 0;
+	lukeSwingSpeed = 5;
+	swingFrameNumber = 0;
+
+	//States
+	currentlySwinging = false;
+	currentlyJumping = false;
+}
 
 //Event Listener for keyboard presses
 window.addEventListener('keydown', keyPressed, false);
@@ -145,10 +214,6 @@ function animate() {
 		context.translate(shipBlasterXPosition-(shipBlasterLeftMove*cWidth),shipBlasterYPosition);
 		context.rotate(-0.6);
 		context.drawImage(boltImage,0,0,455,40,-(shipBlasterLeftMove*cWidth),0,shipBlasterWidth,shipBlasterHeight);
-		
-		if (shipBlasterLeftMove>=0.27 && shipBlasterLeftMove<=0.28) {
-			console.log(shipBlasterLeftMove);
-		}
 		context.restore();
 
 	}
