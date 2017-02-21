@@ -7,7 +7,7 @@ var platformHeight, cWidth, cHeight;
 var raf
 
 //Ship and Obstacle Variables
-var shipXPositions, shipYPositions, shipLeftMove, obstaclesLeftMove, obstaclesXPositions, trooperHeight;
+var shipXPositions, shipYPositions, shipLeftMove, obstaclesLeftMove, obstaclesXPositions, trooperHeight, shipSoundPlayed;
 
 //Player variables
 var playerWidth, playerHeight;
@@ -72,6 +72,9 @@ var currentlySwinging, currentlyJumping;
 
 //Audio Files
 var themeSong = new Audio('Assets/themeSong.ogg');
+var blasterRicochet = new Audio('Assets/blasterRicochet.wav');
+var blasterSound = new Audio('Assets/blaster.wav');
+var shipFly = new Audio('Assets/shipFly.wav');
 
 //Event Listener for keyboard presses
 window.addEventListener('keydown', keyPressedAtHomeScreen, false);
@@ -153,6 +156,7 @@ function initialAssignments() {
 	shipXPositions = cWidth*8.1
 	shipYPositions = cHeight*0.25
 	shipLeftMove = 0;
+	shipSoundPlayed = false;
 
 	//Obstacles Position
 	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
@@ -246,7 +250,7 @@ function animate() {
 	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
 	//Ship movement
-	shipLeftMove+=0.01;
+	shipLeftMove+=0.013;
 	
 	//Wrapping around when reaches end of screen
 	if ((shipXPositions-(shipLeftMove*cWidth)) < (-cWidth*0.2)) {
@@ -254,9 +258,11 @@ function animate() {
 		shipLeftMove = Math.random()*500*0.01;
 		didShipFire=false;
 		shipBlasterDeflected = false;
+		shipSoundPlayed = false;
 	}
 
 	if ((shipXPositions-(shipLeftMove*cWidth))/cWidth <= 0.6 && (didShipFire==false)) {
+		blasterSound.play();
 		didShipFire=true;
 		shipBlasterYPosition = shipYPositions + cWidth*0.15*33/112;
 		shipBlasterXPosition = shipXPositions-(shipLeftMove*cWidth);
@@ -284,6 +290,11 @@ function animate() {
 
 	}
 
+	if ((shipXPositions-(shipLeftMove*cWidth))/cWidth <= 1 && !shipSoundPlayed) {
+		shipSoundPlayed = true;
+		shipFly.play();
+	}
+
 	context.drawImage(shipImage,0,0,112,44,shipXPositions-(shipLeftMove*cWidth),shipYPositions,cWidth*0.15, cWidth*0.15*44/112);
 	
 
@@ -303,7 +314,8 @@ function animate() {
 				
 				//Fire blaster
 				if (randVal==0||randVal==1) {
-				
+					
+					blasterSound.play();
 					didObstacleShoot[i] = true;
 					shouldFireBlaster[i] = true;
 					firedHowLongAgo[i] = 0;
@@ -531,6 +543,7 @@ function checkCollision() {
 				
 				else {
 					blasterDeflected[i] = true;
+					blasterRicochet.play();
 				}
 
 			}
@@ -546,6 +559,7 @@ function checkCollision() {
 
 			else {
 				shipBlasterDeflected = true;
+				blasterRicochet.play();
 			}
 		}
 	}
