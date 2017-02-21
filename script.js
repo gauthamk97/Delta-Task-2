@@ -103,7 +103,7 @@ function animate() {
 	var fontSize=20/749*cWidth;
 	context.fillStyle = '#FFFFFF';
 	context.font = fontSize+"px Verdana";
-	context.fillText("Score : "+score,cWidth*0.8, cHeight*0.9);
+	context.fillText("Score : "+score,cWidth*0.05, cHeight*0.1);
 
 	//Create Clouds
 	cloudYPositions = [cHeight*0.25, cHeight*0.1, cHeight*0.2, cHeight*0.15];
