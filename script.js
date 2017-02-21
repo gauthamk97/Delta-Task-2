@@ -15,7 +15,7 @@ var obstaclesLeftMove = [0,0,0];
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
 var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
-var didCloudFire = [false, false, false, false], cloudBlasterYPosition = [0,0,0,0], cloudBlasterXPosition = [0,0,0,0], cloudBlasterLeftMove = [0,0,0,0], cloudBlasterDownMove = [0,0,0,0], cloudBlasterWidth, cloudBlasterHeight, cloudBlasterRotatedDisplacement;
+var didCloudFire = [false, false, false, false], cloudBlasterYPosition = [0,0,0,0], cloudBlasterXPosition = [0,0,0,0], cloudBlasterLeftMove = [0,0,0,0], cloudBlasterDownMove = [0,0,0,0], cloudBlasterWidth, cloudBlasterHeight, cloudBlasterDeflected =false;
 
 var i = 0;
 
@@ -101,14 +101,14 @@ function animate() {
 			//Element of randomness to when ship appears next
 			cloudLeftMove[i] = Math.random()*500*0.01;
 			didCloudFire[i]=false;
+			cloudBlasterDeflected = false;
 		}
 
 		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth))/cWidth <= 0.6 && (didCloudFire[i]==false)) {
 			didCloudFire[i]=true;
 			cloudBlasterYPosition[i] = cloudYPositions[i] + cWidth*0.15*33/112;
 			cloudBlasterXPosition[i] = cloudXPositions[i]-(cloudLeftMove[i]*cWidth);
-			cloudBlasterRotatedDisplacement = Math.sqrt(Math.pow(cloudBlasterXPosition[i],2)+Math.pow(cloudBlasterYPosition[i],2));
-			console.log(cloudBlasterRotatedDisplacement);
+			
 			cloudBlasterLeftMove[i] = 0;
 			cloudBlasterDownMove = 0;
 		}
@@ -116,12 +116,23 @@ function animate() {
 		if (didCloudFire[i]) {
 			cloudBlasterWidth = cWidth*0.012;
 			cloudBlasterHeight = cloudBlasterWidth*200/455;
-			cloudBlasterLeftMove[i] += 0.01;
+
+			if (cloudBlasterDeflected) {
+				cloudBlasterLeftMove[i] -= 0.01;
+			}
+
+			else {
+				cloudBlasterLeftMove[i] += 0.01;
+			}
 
 			context.save();
 			context.translate(cloudBlasterXPosition[i]-(cloudBlasterLeftMove[i]*cWidth),cloudBlasterYPosition[i]);
 			context.rotate(-0.6);
 			context.drawImage(boltImage,0,0,455,40,-(cloudBlasterLeftMove[i]*cWidth),0,cloudBlasterWidth,cloudBlasterHeight);
+			
+			if (cloudBlasterLeftMove[i]>=0.27 && cloudBlasterLeftMove[i]<=0.28) {
+				console.log(cloudBlasterLeftMove[i]);
+			}
 			context.restore();
 
 		}
@@ -140,12 +151,12 @@ function animate() {
 			checkedIfCanFire[i] = true;
 
 			if (!didObstacleShoot[i]) {
-				console.log('checking firing');
+				
 				randVal = Math.floor(Math.random()*5);
-				console.log(randVal);
+				
 				//Fire blaster
-				if (true) {
-					console.log('fired!');
+				if (randVal==0||randVal==1) {
+				
 					didObstacleShoot[i] = true;
 					shouldFireBlaster[i] = true;
 					firedHowLongAgo[i] = 0;
@@ -335,10 +346,7 @@ function checkCollision() {
 	//Obstacle collision check
 	for (i=0;i<2;i++) {
 		if (((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) < 2*playerWidth) && ((obstaclesXPositions[i]-(obstaclesLeftMove[i]*cWidth)) > playerWidth) && (playerYPos<trooperHeight)) {
-			console.log('collision detected');
-			window.cancelAnimationFrame(raf);
-			window.alert('you dead');
-			window.location.reload();
+			dead();
 		}
 	}
 
@@ -348,10 +356,7 @@ function checkCollision() {
 			if ((blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) < 2*playerWidth && (blasterXPositions[i]-(blasterLeftMove[i]*cWidth)+blasterWidth/2) > playerWidth && playerYPos<(cHeight-platformHeight-blasterYPosition)) {
 				
 				if (!currentlySwinging && !blasterDeflected[i]) {
-					console.log('collision detected');
-					window.cancelAnimationFrame(raf);
-					window.alert('you dead');
-					window.location.reload();
+					dead();
 				}
 				
 				else {
@@ -362,4 +367,24 @@ function checkCollision() {
 		}
 	}
 
+	//Ship blaster collision check
+	if (cloudBlasterLeftMove[0]>=0.27 && cloudBlasterLeftMove[0]<=0.28 && !cloudBlasterDeflected) {
+		if (playerYPos>=0 && playerYPos<trooperHeight*4/5) {
+			if (!currentlySwinging) {
+				dead();
+			}
+
+			else {
+				cloudBlasterDeflected = true;
+			}
+		}
+	}
+
+}
+
+function dead() {
+	console.log('collision detected');
+	window.cancelAnimationFrame(raf);
+	window.alert('you dead');
+	window.location.reload();
 }
