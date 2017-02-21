@@ -5,8 +5,8 @@ var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, c
 var yVel=0;
 var grav=0.001;
 
-cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
-cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
+cloudXPositions = [cWidth*2.2, cWidth*0.4, cWidth*0.65, cWidth*0.95];
+cloudYPositions = [cHeight*0.3, cHeight*0.1, cHeight*0.2, cHeight*0.15];
 obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
 var cloudLeftMove = [0,0,0,0];
@@ -44,6 +44,9 @@ backgroundImage.src = "Assets/background.png";
 
 var boltImage = new Image();
 boltImage.src = "Assets/bolt.png";
+
+var shipImage = new Image();
+shipImage.src = "Assets/ship.png"
 
 //States
 var currentlySwinging = false;
@@ -83,22 +86,22 @@ function animate() {
 	context.fillRect(0,cHeight-platformHeight,cWidth,platformHeight);
 
 	//Create Clouds
-	context.fillStyle = 'white';
-	cloudYPositions = [cHeight*0.2, cHeight*0.1, cHeight*0.3, cHeight*0.15];
-	cloudXPositions = [cWidth*0.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
+	cloudYPositions = [cHeight*0.25, cHeight*0.1, cHeight*0.2, cHeight*0.15];
+	cloudXPositions = [cWidth*8.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
 	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
 	//Cloud movement
-	for (i=0;i<4;i++) {
+	for (i=0;i<1;i++) {
 
-		cloudLeftMove[i]+=0.002;
+		cloudLeftMove[i]+=0.01;
 		
-		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.1)) {
-			cloudLeftMove[i] = (cloudXPositions[i]-cWidth)/cWidth;
+		//Wrapping around when reaches end of screen
+		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.2)) {
+			//Element of randomness to when ship appears next
+			cloudLeftMove[i] = Math.random()*500*0.01;
 		}
 
-		context.fillStyle = 'white';
-		context.fillRect(cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.1, cWidth*0.05);
+		context.drawImage(shipImage,0,0,112,44,cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.15, cWidth*0.15*44/112);
 	}
 
 	//Obstactles movement
