@@ -12,6 +12,8 @@ obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 var cloudLeftMove = [0,0,0,0];
 var obstaclesLeftMove = [0,0,0];
 
+var isCurrentlyPaused = false;
+
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
 var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
@@ -21,6 +23,8 @@ var i = 0;
 
 //Background movement variable
 var backgroundLeftMove = 0;
+console.log(cWidth);
+var score=0;
 
 //Sprites
 var framenumber = 0;
@@ -94,6 +98,12 @@ function animate() {
 	context.fillStyle = '#222222';
 	platformHeight = cHeight*0.24;
 	context.fillRect(0,cHeight-platformHeight,cWidth,platformHeight);
+
+	//Score Counter
+	var fontSize=20/749*cWidth;
+	context.fillStyle = '#FFFFFF';
+	context.font = fontSize+"px Verdana";
+	context.fillText("Score : "+score,cWidth*0.8, cHeight*0.9);
 
 	//Create Clouds
 	cloudYPositions = [cHeight*0.25, cHeight*0.1, cHeight*0.2, cHeight*0.15];
@@ -183,6 +193,7 @@ function animate() {
 			checkedIfCanFire[i] = false;
 			blasterXPositions[i]=0;
 			blasterDeflected[i] = false;
+			score++;
 		}
 
 		if (shouldFireBlaster[i]) {
@@ -331,6 +342,13 @@ function animate() {
 animate();
 
 function keyPressed(e) {
+
+	if (isCurrentlyPaused) {
+		isCurrentlyPaused=false;
+		animate();
+		return;
+	}
+
 	if (e.keyCode==32 && !currentlyJumping) { //Space Bar was pressed
 		yVel = 0.02;
 		cHeight = window.innerWidth/2;
@@ -342,6 +360,11 @@ function keyPressed(e) {
 		currentlySwinging = true;
 		swingFrameNumber = 1;
 		lukeSwingSpritePosition=0;
+	}
+
+	else if (e.keyCode==80) {
+		window.cancelAnimationFrame(raf);
+		isCurrentlyPaused=true;
 	}
 
 	else {
