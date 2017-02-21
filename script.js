@@ -1,23 +1,23 @@
 var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
-var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, cloudXPositions, cloudYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
+var platformHeight, cWidth = window.innerWidth, cHeight = window.innerWidth/2, shipXPositions, shipYPositions, obstaclesXPositions, playerWidth, playerHeight, playerYPos=0, raf, trooperHeight;
 
 var yVel=0;
 var grav=0.001;
 
-cloudXPositions = [cWidth*2.2, cWidth*0.4, cWidth*0.65, cWidth*0.95];
-cloudYPositions = [cHeight*0.3, cHeight*0.1, cHeight*0.2, cHeight*0.15];
+shipXPositions = cWidth*8.1
+shipYPositions = cHeight*0.25
 obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
-var cloudLeftMove = [0,0,0,0];
-var obstaclesLeftMove = [0,0,0];
+var shipLeftMove = 0;
+var obstaclesLeftMove = [0,0];
 
 var isCurrentlyPaused = false;
 
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
 var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
-var didCloudFire=false, cloudBlasterYPosition = 0, cloudBlasterXPosition = 0, cloudBlasterLeftMove = 0, cloudBlasterWidth, cloudBlasterHeight, cloudBlasterDeflected=false;
+var didShipFire=false, shipBlasterYPosition = 0, shipBlasterXPosition = 0, shipBlasterLeftMove = 0, shipBlasterWidth, shipBlasterHeight, shipBlasterDeflected=false;
 
 var i = 0;
 
@@ -105,58 +105,56 @@ function animate() {
 	context.font = fontSize+"px Verdana";
 	context.fillText("Score : "+score,cWidth*0.05, cHeight*0.1);
 
-	//Create Clouds
-	cloudYPositions = [cHeight*0.25, cHeight*0.1, cHeight*0.2, cHeight*0.15];
-	cloudXPositions = [cWidth*8.1, cWidth*0.4, cWidth*0.65, cWidth*0.95];
+	//Create Ships
+	shipYPositions = cHeight*0.25
+	shipXPositions = cWidth*8.1
 	obstaclesXPositions = [cWidth*1.15, cWidth*1.65];
 
-	//Cloud movement
-	for (i=0;i<1;i++) {
-
-		cloudLeftMove[i]+=0.01;
-		
-		//Wrapping around when reaches end of screen
-		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.2)) {
-			//Element of randomness to when ship appears next
-			cloudLeftMove[i] = Math.random()*500*0.01;
-			didCloudFire=false;
-			cloudBlasterDeflected = false;
-		}
-
-		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth))/cWidth <= 0.6 && (didCloudFire==false)) {
-			didCloudFire=true;
-			cloudBlasterYPosition = cloudYPositions[i] + cWidth*0.15*33/112;
-			cloudBlasterXPosition = cloudXPositions[i]-(cloudLeftMove[i]*cWidth);
-			
-			cloudBlasterLeftMove = 0;
-		}
-
-		if (didCloudFire) {
-			cloudBlasterWidth = cWidth*0.012;
-			cloudBlasterHeight = cloudBlasterWidth*200/455;
-
-			if (cloudBlasterDeflected) {
-				cloudBlasterLeftMove -= 0.01;
-			}
-
-			else {
-				cloudBlasterLeftMove += 0.01;
-			}
-
-			context.save();
-			context.translate(cloudBlasterXPosition-(cloudBlasterLeftMove*cWidth),cloudBlasterYPosition);
-			context.rotate(-0.6);
-			context.drawImage(boltImage,0,0,455,40,-(cloudBlasterLeftMove*cWidth),0,cloudBlasterWidth,cloudBlasterHeight);
-			
-			if (cloudBlasterLeftMove>=0.27 && cloudBlasterLeftMove<=0.28) {
-				console.log(cloudBlasterLeftMove);
-			}
-			context.restore();
-
-		}
-
-		context.drawImage(shipImage,0,0,112,44,cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.15, cWidth*0.15*44/112);
+	//Ship movement
+	shipLeftMove+=0.01;
+	
+	//Wrapping around when reaches end of screen
+	if ((shipXPositions-(shipLeftMove*cWidth)) < (-cWidth*0.2)) {
+		//Element of randomness to when ship appears next
+		shipLeftMove = Math.random()*500*0.01;
+		didShipFire=false;
+		shipBlasterDeflected = false;
 	}
+
+	if ((shipXPositions-(shipLeftMove*cWidth))/cWidth <= 0.6 && (didShipFire==false)) {
+		didShipFire=true;
+		shipBlasterYPosition = shipYPositions + cWidth*0.15*33/112;
+		shipBlasterXPosition = shipXPositions-(shipLeftMove*cWidth);
+		
+		shipBlasterLeftMove = 0;
+	}
+
+	if (didShipFire) {
+		shipBlasterWidth = cWidth*0.012;
+		shipBlasterHeight = shipBlasterWidth*200/455;
+
+		if (shipBlasterDeflected) {
+			shipBlasterLeftMove -= 0.01;
+		}
+
+		else {
+			shipBlasterLeftMove += 0.01;
+		}
+
+		context.save();
+		context.translate(shipBlasterXPosition-(shipBlasterLeftMove*cWidth),shipBlasterYPosition);
+		context.rotate(-0.6);
+		context.drawImage(boltImage,0,0,455,40,-(shipBlasterLeftMove*cWidth),0,shipBlasterWidth,shipBlasterHeight);
+		
+		if (shipBlasterLeftMove>=0.27 && shipBlasterLeftMove<=0.28) {
+			console.log(shipBlasterLeftMove);
+		}
+		context.restore();
+
+	}
+
+	context.drawImage(shipImage,0,0,112,44,shipXPositions-(shipLeftMove*cWidth),shipYPositions,cWidth*0.15, cWidth*0.15*44/112);
+	
 
 	//Obstactles movement
 	for (i=0;i<2;i++) {
@@ -411,14 +409,14 @@ function checkCollision() {
 	}
 
 	//Ship blaster collision check
-	if (cloudBlasterLeftMove>=0.27 && cloudBlasterLeftMove<=0.28 && !cloudBlasterDeflected) {
+	if (shipBlasterLeftMove>=0.27 && shipBlasterLeftMove<=0.28 && !shipBlasterDeflected) {
 		if (playerYPos>=0 && playerYPos<trooperHeight*4/5) {
 			if (!currentlySwinging) {
 				dead();
 			}
 
 			else {
-				cloudBlasterDeflected = true;
+				shipBlasterDeflected = true;
 			}
 		}
 	}
