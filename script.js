@@ -15,6 +15,7 @@ var obstaclesLeftMove = [0,0,0];
 //Blaster firing variables
 var randVal, shouldFireBlaster = [false, false], checkedIfCanFire = [false, false], didObstacleShoot = [false,false], firedHowLongAgo = [0,0];
 var blasterXPositions = [0,0], blasterLeftMove = [0,0], blasterYPosition = 0, blasterWidth, blasterHeight, blasterDeflected = [false,false];
+var didCloudFire = [false, false, false, false], cloudBlasterYPosition = [0,0,0,0], cloudBlasterXPosition = [0,0,0,0], cloudBlasterLeftMove = [0,0,0,0], cloudBlasterDownMove = [0,0,0,0], cloudBlasterWidth, cloudBlasterHeight, cloudBlasterRotatedDisplacement;
 
 var i = 0;
 
@@ -99,6 +100,30 @@ function animate() {
 		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth)) < (-cWidth*0.2)) {
 			//Element of randomness to when ship appears next
 			cloudLeftMove[i] = Math.random()*500*0.01;
+			didCloudFire[i]=false;
+		}
+
+		if ((cloudXPositions[i]-(cloudLeftMove[i]*cWidth))/cWidth <= 0.6 && (didCloudFire[i]==false)) {
+			didCloudFire[i]=true;
+			cloudBlasterYPosition[i] = cloudYPositions[i] + cWidth*0.15*33/112;
+			cloudBlasterXPosition[i] = cloudXPositions[i]-(cloudLeftMove[i]*cWidth);
+			cloudBlasterRotatedDisplacement = Math.sqrt(Math.pow(cloudBlasterXPosition[i],2)+Math.pow(cloudBlasterYPosition[i],2));
+			console.log(cloudBlasterRotatedDisplacement);
+			cloudBlasterLeftMove[i] = 0;
+			cloudBlasterDownMove = 0;
+		}
+
+		if (didCloudFire[i]) {
+			cloudBlasterWidth = cWidth*0.012;
+			cloudBlasterHeight = cloudBlasterWidth*200/455;
+			cloudBlasterLeftMove[i] += 0.01;
+
+			context.save();
+			context.translate(cloudBlasterXPosition[i]-(cloudBlasterLeftMove[i]*cWidth),cloudBlasterYPosition[i]);
+			context.rotate(-0.6);
+			context.drawImage(boltImage,0,0,455,40,-(cloudBlasterLeftMove[i]*cWidth),0,cloudBlasterWidth,cloudBlasterHeight);
+			context.restore();
+
 		}
 
 		context.drawImage(shipImage,0,0,112,44,cloudXPositions[i]-(cloudLeftMove[i]*cWidth),cloudYPositions[i],cWidth*0.15, cWidth*0.15*44/112);
