@@ -1,4 +1,4 @@
-#INSTRUCTIONS
+# INSTRUCTIONS
 
 You are Luke Skywalker. It is up to you to save the galaxy by dodging the empire's endless number of stormtroopers (who'll attack you by ground) as well as their fighter ships (who'll attack you by air). Use the following controls to bring peace and order to the galaxy :-
 
